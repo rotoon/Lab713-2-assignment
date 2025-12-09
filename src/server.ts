@@ -106,6 +106,16 @@ app.get('/books', (req: Request, res: Response) => {
   }
 })
 
+app.get('/books/:id', (req: Request, res: Response) => {
+  const id = Number(req.params.id)
+  const book = books.find((book) => book.id === id)
+  if (book) {
+    res.json(book)
+  } else {
+    res.status(404).send('Book not found')
+  }
+})
+
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
 })
