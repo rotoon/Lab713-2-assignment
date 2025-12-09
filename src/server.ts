@@ -1,10 +1,7 @@
 import express, { Request, Response } from 'express'
 
-const app = express()
-const port = 3000
-
 interface Book {
-  id: number
+  id?: number
   title: string
   author_name: string
   desciption: string
@@ -90,6 +87,10 @@ const books: Book[] = [
   },
 ]
 
+const app = express()
+const port = 3000
+app.use(express.json())
+
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!')
 })
@@ -103,6 +104,26 @@ app.get('/books', (req: Request, res: Response) => {
     res.json(filteredBooks)
   } else {
     res.json(books)
+  }
+})
+
+app.post('/books', (req, res) => {
+  try {
+    const newBook = req.body
+    if (newBook?.id) {
+      const existingIndex = books.findIndex((book) => book.id === newBook.id)
+      if (existingIndex !== -1) {
+        books[existingIndex] = newBook
+        res.json(newBook)
+        return
+      }
+    }
+    newBook.id = books.length + 1
+    books.push(newBook)
+    res.json(newBook)
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Error adding book')
   }
 })
 
