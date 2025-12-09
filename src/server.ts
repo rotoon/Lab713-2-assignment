@@ -97,9 +97,7 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/books', (req: Request, res: Response) => {
   if (req.query.title) {
     const title = req.query.title as string
-    const filteredBooks = books.filter((book) =>
-      book?.title?.toLowerCase().startsWith(title)
-    )
+    const filteredBooks = books.filter((book) => book?.title?.startsWith(title))
     res.json(filteredBooks)
   } else {
     res.json(books)
