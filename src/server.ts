@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import {
+  addBook,
   getAllBooks,
   getBookById,
   getBooksByCategory,
@@ -13,32 +14,31 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!')
 })
 
-app.get('/books', (req: Request, res: Response) => {
+app.get('/books', async (req: Request, res: Response) => {
   if (req.query.title) {
     const title = req.query.title as string
-    const filteredBooks = getBooksByCategory(title)
+    const filteredBooks = await getBooksByCategory(title)
     res.json(filteredBooks)
   } else {
-    res.json(getAllBooks())
+    res.json(await getAllBooks())
   }
 })
 
-app.post('/books', (req, res) => {
+app.post('/books', async (req, res) => {
   try {
     const newBook = req.body
+    const allBooks = await getAllBooks()
     if (newBook?.id) {
-      const existingIndex = getAllBooks().findIndex(
-        (book) => book.id === newBook.id
-      )
+      const existingIndex = allBooks.findIndex((book) => book.id === newBook.id)
       if (existingIndex !== -1) {
-        getAllBooks()[existingIndex] = newBook
-        res.json(newBook)
-        return
+        allBooks[existingIndex] = newBook
+        res.json(allBooks[existingIndex])
+      } else {
+        res.status(404).send('Book not found')
       }
+    } else {
+      res.json(await addBook(newBook))
     }
-    newBook.id = getAllBooks().length + 1
-    getAllBooks().push(newBook)
-    res.json(newBook)
   } catch (error) {
     console.log(error)
     res.status(500).send('Error adding book')

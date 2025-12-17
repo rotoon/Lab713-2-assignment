@@ -79,20 +79,20 @@ const books: Book[] = [
   },
 ]
 
-export function getBooksByCategory(category: string): Book[] {
+export async function getBooksByCategory(category: string): Promise<Book[]> {
   const filteredBooks = books.filter((book) => book.groups.includes(category))
   return filteredBooks
 }
 
-export function getAllBooks(): Book[] {
+export async function getAllBooks(): Promise<Book[]> {
   return books
 }
 
-export function getBookById(id: number): Book | undefined {
+export async function getBookById(id: number): Promise<Book | undefined> {
   return books.find((book) => book.id === id)
 }
 
-export function addBook(newBook: Book): Book {
+export async function addBook(newBook: Book): Promise<Book> {
   newBook.id = books.length + 1
   books.push(newBook)
   return newBook
