@@ -15,9 +15,9 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.get('/books', async (req: Request, res: Response) => {
-  if (req.query.title) {
-    const title = req.query.title as string
-    const filteredBooks = await getBooksByCategory(title)
+  if (req.query.category) {
+    const category = req.query.category as string
+    const filteredBooks = await getBooksByCategory(category)
     res.json(filteredBooks)
   } else {
     res.json(await getAllBooks())
