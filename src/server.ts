@@ -17,42 +17,26 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/books', (req: Request, res: Response) => {
   if (req.query.title) {
     const title = req.query.title as string
-    const filteredBooks = getBooksByCategory(title)
-    res.json(filteredBooks)
+    getBooksByCategory(title).then((books) => res.json(books))
   } else {
-    res.json(getAllBooks())
+    getAllBooks().then((books) => res.json(books))
   }
 })
 
 app.post('/books', (req, res) => {
-  try {
-    const newBook = req.body
-    if (newBook?.id) {
-      const existingIndex = getAllBooks().findIndex(
-        (book) => book.id === newBook.id
-      )
-      if (existingIndex !== -1) {
-        getAllBooks()[existingIndex] = newBook
-        res.json(newBook)
-        return
-      }
-    }
-    addBook(newBook)
-    res.json(newBook)
-  } catch (error) {
-    console.log(error)
-    res.status(500).send('Error adding book')
-  }
+  const newBook = req.body
+  addBook(newBook).then((book) => res.json(book))
 })
 
 app.get('/books/:id', (req: Request, res: Response) => {
   const id = Number(req.params.id)
-  const book = getBookById(id)
-  if (book) {
-    res.json(book)
-  } else {
-    res.status(404).send('Book not found')
-  }
+  getBookById(id).then((book) => {
+    if (book) {
+      res.json(book)
+    } else {
+      res.status(404).send('Book not found')
+    }
+  })
 })
 
 app.listen(port, () => {
