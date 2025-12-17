@@ -1,8 +1,8 @@
 import Book from '../models/Book'
 import * as repo from '../repositories/BookRepository'
 
-export async function getBooksByCategory(category: string): Promise<Book[]> {
-  return repo.getBooksByCategory(category)
+export async function getBooksByTitle(title: string): Promise<Book[]> {
+  return repo.getBooksByTitle(title)
 }
 
 export async function getAllBooks(): Promise<Book[]> {
