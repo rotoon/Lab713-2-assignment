@@ -3,7 +3,7 @@ import {
   addBook,
   getAllBooks,
   getBookById,
-  getBooksByCategory,
+  getBooksByTitle,
 } from './services/BookService'
 
 const app = express()
@@ -14,29 +14,45 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!')
 })
 
-app.get('/books', (req: Request, res: Response) => {
-  if (req.query.category) {
-    const cate = req.query.category as string
-    getBooksByCategory(cate).then((books) => res.json(books))
+app.get('/books', async (req: Request, res: Response) => {
+  if (req.query.title) {
+    const title = req.query.title as string
+    const filteredBooks = await getBooksByTitle(title)
+    res.json(filteredBooks)
   } else {
-    getAllBooks().then((books) => res.json(books))
+    res.json(await getAllBooks())
   }
 })
 
-app.post('/books', (req, res) => {
-  const newBook = req.body
-  addBook(newBook).then((book) => res.json(book))
+app.post('/books', async (req, res) => {
+  try {
+    const newBook = req.body
+    const allBooks = await getAllBooks()
+    if (newBook?.id) {
+      const existingIndex = allBooks.findIndex((book) => book.id === newBook.id)
+      if (existingIndex !== -1) {
+        allBooks[existingIndex] = newBook
+        res.json(allBooks[existingIndex])
+      } else {
+        res.status(404).send('Book not found')
+      }
+    } else {
+      res.json(await addBook(newBook))
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Error adding book')
+  }
 })
 
 app.get('/books/:id', (req: Request, res: Response) => {
   const id = Number(req.params.id)
-  getBookById(id).then((book) => {
-    if (book) {
-      res.json(book)
-    } else {
-      res.status(404).send('Book not found')
-    }
-  })
+  const book = getBookById(id)
+  if (book) {
+    res.json(book)
+  } else {
+    res.status(404).send('Book not found')
+  }
 })
 
 app.listen(port, () => {

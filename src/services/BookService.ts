@@ -79,8 +79,10 @@ const books: Book[] = [
   },
 ]
 
-export function getBooksByCategory(category: string): Promise<Book[]> {
-  const filteredBooks = books.filter((book) => book.groups.includes(category))
+export function getBooksByTitle(title: string): Promise<Book[]> {
+  const filteredBooks = books.filter((book) =>
+    book.title.toLowerCase().startsWith(title.toLowerCase())
+  )
   return Promise.resolve(filteredBooks)
 }
 
