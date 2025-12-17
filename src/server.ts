@@ -15,9 +15,9 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.get('/books', (req: Request, res: Response) => {
-  if (req.query.title) {
-    const title = req.query.title as string
-    getBooksByCategory(title).then((books) => res.json(books))
+  if (req.query.category) {
+    const cate = req.query.category as string
+    getBooksByCategory(cate).then((books) => res.json(books))
   } else {
     getAllBooks().then((books) => res.json(books))
   }
