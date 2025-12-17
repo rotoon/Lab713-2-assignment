@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import {
+  addBook,
   getAllBooks,
   getBookById,
   getBooksByCategory,
@@ -36,8 +37,7 @@ app.post('/books', (req, res) => {
         return
       }
     }
-    newBook.id = getAllBooks().length + 1
-    getAllBooks().push(newBook)
+    addBook(newBook)
     res.json(newBook)
   } catch (error) {
     console.log(error)
