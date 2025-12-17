@@ -1,5 +1,5 @@
 import Book from '../models/Book'
-import * as repo from '../repositories/BookRepository'
+import * as repo from '../repositories/BookRepositoryDb'
 
 export async function getBooksByTitle(title: string): Promise<Book[]> {
   return repo.getBooksByTitle(title)
@@ -15,4 +15,8 @@ export async function getBookById(id: number): Promise<Book | undefined> {
 
 export async function addBook(newBook: Book): Promise<Book> {
   return repo.addBook(newBook)
+}
+
+export async function updateBook(book: Book): Promise<Book> {
+  return repo.updateBook(book)
 }

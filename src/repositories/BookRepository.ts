@@ -99,3 +99,12 @@ export async function addBook(newBook: Book): Promise<Book> {
   books.push(newBook)
   return newBook
 }
+
+export async function updateBook(book: Book): Promise<Book> {
+  const index = books.findIndex((b) => b.id === book.id)
+  if (index === -1) {
+    throw new Error('Book not found')
+  }
+  books[index] = book
+  return book
+}

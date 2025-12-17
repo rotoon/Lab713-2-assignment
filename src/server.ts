@@ -4,6 +4,7 @@ import {
   getAllBooks,
   getBookById,
   getBooksByTitle,
+  updateBook,
 } from './services/BookService'
 
 const app = express()
@@ -18,9 +19,9 @@ app.get('/books', async (req: Request, res: Response) => {
   if (req.query.title) {
     const title = req.query.title as string
     const filteredBooks = await getBooksByTitle(title)
-    res.json(filteredBooks)
+    res.status(200).json(filteredBooks)
   } else {
-    res.json(await getAllBooks())
+    res.status(200).json(await getAllBooks())
   }
 })
 
@@ -31,13 +32,18 @@ app.post('/books', async (req, res) => {
     if (newBook?.id) {
       const existingIndex = allBooks.findIndex((book) => book.id === newBook.id)
       if (existingIndex !== -1) {
-        allBooks[existingIndex] = newBook
-        res.json(allBooks[existingIndex])
+        const updatedBook = await updateBook(newBook)
+        res
+          .status(200)
+          .json({ message: 'Book updated successfully', data: updatedBook })
       } else {
         res.status(404).send('Book not found')
       }
     } else {
-      res.json(await addBook(newBook))
+      const addedBook = await addBook(newBook)
+      res
+        .status(201)
+        .json({ message: 'Book added successfully', data: addedBook })
     }
   } catch (error) {
     console.log(error)
@@ -49,7 +55,7 @@ app.get('/books/:id', (req: Request, res: Response) => {
   const id = Number(req.params.id)
   const book = getBookById(id)
   if (book) {
-    res.json(book)
+    res.status(200).json(book)
   } else {
     res.status(404).send('Book not found')
   }
